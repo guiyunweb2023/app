@@ -79,6 +79,9 @@ public class Constants
     public static final String IS_ADMIN = "isAdmin";
 
 
+    public static final String USER = "user";
+
+
     public static final String USER_ID = "userId";
 
     /**

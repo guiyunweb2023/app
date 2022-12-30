@@ -8,7 +8,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import plus.guiyun.app.common.code.text.Convert;
 import plus.guiyun.app.common.constant.Constants;
-import plus.guiyun.app.common.utils.StringUtils;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
