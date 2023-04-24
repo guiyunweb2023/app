@@ -29,6 +29,7 @@ export default [
             {
                 name: '权限演示',
                 path: '/access',
+                access: 'root',
                 component: './Access',
             },
             {

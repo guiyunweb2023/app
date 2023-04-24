@@ -5,11 +5,19 @@
 // import {RequestConfig} from "@umijs/max";
 import {requestConfig} from "@/api";
 // @ts-ignore
-import {Avatar, Dropdown, MenuProps} from "antd";
 import UserAvatar from "@/components/UserAvatar";
+import Cookies from "js-cookie";
+import {getUser} from "@/api/auth";
 
-export async function getInitialState(): Promise<{ access: string }> {
-    return {access: 'admin'};
+export async function getInitialState(): Promise<any> {
+    if (Cookies.get("token")){
+        const initialData = await getUser()
+        // console.log(initialData)
+        return initialData.user
+    }else {
+        return {}
+    }
+
 }
 
 export const layout = () => {
@@ -19,7 +27,7 @@ export const layout = () => {
             locale: false,
         },
         layout: 'mix',
-        rightRender: (initialState: any) => {
+        rightRender: () => {
             return (
                <UserAvatar />
             )
