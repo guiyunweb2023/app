@@ -1,59 +1,71 @@
+# You can override the included template(s) by including variable overrides
+# SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
+# Secret Detection customization: https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings
+# Dependency Scanning customization: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#customizing-the-dependency-scanning-settings
+# Container Scanning customization: https://docs.gitlab.com/ee/user/application_security/container_scanning/#customizing-the-container-scanning-settings
+# Note that environment variables can be set in several places
+# See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
 build_service:
   stage: build
   retry: 2
   tags:
-    - java
+  - java
   script:
-    - export JAVA_HOME=/usr/local/jdk17/
-    - export PATH=$JAVA_HOME/bin:$PATH
-    - export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
-    - java --version
-    - gradle clean build
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build -t registry.docker.guiyunweb.com/guiyun/app .
-    - docker push registry.docker.guiyunweb.com/guiyun/app
-
+  - export JAVA_HOME=/usr/local/jdk17/
+  - export PATH=$JAVA_HOME/bin:$PATH
+  - export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
+  - java --version
+  - gradle clean build
+  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  - docker build -t registry.docker.guiyunweb.com/guiyun/app .
+  - docker push registry.docker.guiyunweb.com/guiyun/app
 build_web:
   stage: build
   retry: 2
   tags:
-    - web
+  - web
   script:
-    - cd app-ui/
-    - export NODE_OPTIONS=--max-old-space-size=8192
-    - pnpm install
-    - pnpm run build
-    - cd ..
-    - echo "build success！"
+  - cd app-ui/
+  - export NODE_OPTIONS=--max-old-space-size=8192
+  - pnpm install
+  - pnpm run build
+  - cd ..
+  - echo "build success！"
   artifacts:
     name: "$CI_COMMIT_REF_NAME"
     paths:
-      - app-ui/dist/*
-
-
+    - app-ui/dist/*
 deploy_service:
   stage: deploy
-  needs: [ "build_service" ]
+  needs:
+  - build_service
   retry: 2
   tags:
-    - deploy
+  - deploy
   script:
-    - mkdir -p ~/.ssh
-    - echo "$SSH_PRIVATE_KEY" >>  ~/.ssh/id_rsa
-    - chmod -R 700 ~/.ssh
-    - ssh -t -o StrictHostKeyChecking=no root@$HOST_SHANGHAI "cd /home/app/docker-compose && docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY && docker compose pull && docker compose up -d --build"
-
-
+  - mkdir -p ~/.ssh
+  - echo "$SSH_PRIVATE_KEY" >>  ~/.ssh/id_rsa
+  - chmod -R 700 ~/.ssh
+  - ssh -t -o StrictHostKeyChecking=no root@$HOST_SHANGHAI "cd /home/app/docker-compose
+    && docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY &&
+    docker compose pull && docker compose up -d --build"
 deploy_web:
   stage: deploy
   tags:
-    - deploy
+  - deploy
   retry: 2
-  needs: [ "build_web" ]
+  needs:
+  - build_web
   script:
-    - mkdir -p ~/.ssh
-    - echo "$SSH_PRIVATE_KEY" >>  ~/.ssh/id_rsa
-    - chmod -R 700 ~/.ssh
-    - ssh -t -o StrictHostKeyChecking=no root@$HOST_SHANGHAI "rm -rf /home/app/html/*"
-    - scp -r -o StrictHostKeyChecking=no app-ui/dist/* root@$HOST_SHANGHAI:/home/app/html
-    - echo "deploy success"
+  - mkdir -p ~/.ssh
+  - echo "$SSH_PRIVATE_KEY" >>  ~/.ssh/id_rsa
+  - chmod -R 700 ~/.ssh
+  - ssh -t -o StrictHostKeyChecking=no root@$HOST_SHANGHAI "rm -rf /home/app/html/*"
+  - scp -r -o StrictHostKeyChecking=no app-ui/dist/* root@$HOST_SHANGHAI:/home/app/html
+  - echo "deploy success"
+stages:
+- test
+sast:
+  stage: test
+include:
+- template: Security/SAST.gitlab-ci.yml
