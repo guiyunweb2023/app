@@ -41,7 +41,7 @@ deploy_service:
     - mkdir -p ~/.ssh
     - echo "$SSH_PRIVATE_KEY" >>  ~/.ssh/id_rsa
     - chmod -R 700 ~/.ssh
-    - ssh -t -o StrictHostKeyChecking=no root@$HOST_SHANGHAI "cd /home/app/docker-compose && docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY && docker compose pull && docker compose up -d --build"
+    - ssh -tt -o StrictHostKeyChecking=no root@$HOST_SHANGHAI "cd /home/app/docker-compose && docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY && docker compose pull && docker compose up -d --build"
 
 
 deploy_web:
@@ -54,6 +54,6 @@ deploy_web:
     - mkdir -p ~/.ssh
     - echo "$SSH_PRIVATE_KEY" >>  ~/.ssh/id_rsa
     - chmod -R 700 ~/.ssh
-    - ssh -t -o StrictHostKeyChecking=no root@$HOST_SHANGHAI "rm -rf /home/app/html/*"
+    - ssh -tt -o StrictHostKeyChecking=no root@$HOST_SHANGHAI "rm -rf /home/app/html/*"
     - scp -r -o StrictHostKeyChecking=no app-ui/dist/* root@$HOST_SHANGHAI:/home/app/html
     - echo "deploy success"
