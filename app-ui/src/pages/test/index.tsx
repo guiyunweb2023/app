@@ -1,7 +1,12 @@
 // @ts-ignore
-import {BetaSchemaForm, ProTable} from "@ant-design/pro-components";
+import {ProTable} from "@ant-design/pro-components";
 // @ts-ignore
 import {Button, message} from "antd";
+// @ts-ignore
+import ProProvider from "@ant-design/pro-provider";
+// @ts-ignore
+import {BetaSchemaForm} from "@ant-design/pro-form";
+import {useContext} from "react";
 
 
 export default function () {
@@ -56,11 +61,7 @@ export default function () {
         {
             title: '文件',
             dataIndex: 'update',
-            render: () => [
-                <Button type="link" key={1}>
-                    编辑
-                </Button>,
-            ],
+            valueType: "upload",
         },
     ]
     const dataSource: any = [
@@ -78,27 +79,45 @@ export default function () {
         },
     ];
 
+    const values = useContext(ProProvider);
+
     return (
         <ProTable
             toolBarRender={() => [
-                <BetaSchemaForm
-                    columns={columnForm}
-                    title={'新建表单'}
-                    rowProps={{
-                        gutter: [16, 16],
+                <ProProvider.Provider
+                    key='1'
+                    value={{
+                        ...values,
+                        valueTypeMap: {
+                            upload: {
+                                renderFormItem(text, props) {
+                                    console.log(props);
+                                    console.log("渲染自定义valueType");
+                                    return <Button>上传按钮</Button>;
+                                },
+                            },
+                        },
                     }}
-                    colProps={{
-                        span: 12,
-                    }}
-                    grid={true}
-                    trigger={<Button type="primary"> 新建 </Button>}
-                    onFinish={async (values:any) => {
-                        console.log(values.name);
-                        message.success('提交成功');
-                        return true;
-                    }}
-                    key={1} layoutType='ModalForm'>
-                </BetaSchemaForm>
+                >
+                    <BetaSchemaForm
+                        columns={columnForm}
+                        title={'新建表单'}
+                        rowProps={{
+                            gutter: [16, 16],
+                        }}
+                        colProps={{
+                            span: 12,
+                        }}
+                        grid={true}
+                        trigger={<Button type="primary"> 新建 </Button>}
+                        onFinish={async (values: any) => {
+                            console.log(values.name);
+                            message.success('提交成功');
+                            return true;
+                        }}
+                        key={1} layoutType='ModalForm'>
+                    </BetaSchemaForm>
+                </ProProvider.Provider>
             ]}
             dataSource={dataSource}
             columns={columns}
