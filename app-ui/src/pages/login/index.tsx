@@ -11,6 +11,7 @@ import {LoginFormPage} from "@ant-design/pro-form";
 // @ts-ignore
 import {ProFormText} from "@ant-design/pro-components";
 import {LockOutlined, UserOutlined} from "@ant-design/icons";
+import {Helmet} from "react-helmet";
 
 export default function () {
 
@@ -40,6 +41,10 @@ export default function () {
 
     return (
         <div style={{backgroundColor: '#1f5abc', height: '100vh'}}>
+            <Helmet>
+                <meta charSet="utf-8"/>
+                <title>登录</title>
+            </Helmet>
             <LoginFormPage
                 logo='https://img.alicdn.com/tfs/TB1YHEpwUT1gK0jSZFhXXaAtVXa-28-27.svg'
                 title="登录"
