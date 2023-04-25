@@ -5,7 +5,7 @@ import {Button, message} from "antd";
 // @ts-ignore
 import ProProvider from "@ant-design/pro-provider";
 // @ts-ignore
-import {BetaSchemaForm} from "@ant-design/pro-form";
+import {BetaSchemaForm, ProFormUploadButton} from "@ant-design/pro-form";
 import {useContext} from "react";
 
 
@@ -93,7 +93,18 @@ export default function () {
                                 renderFormItem(text, props) {
                                     console.log(props);
                                     console.log("渲染自定义valueType");
-                                    return <Button>上传按钮</Button>;
+                                    return (
+                                        <ProFormUploadButton
+                                            name="upload"
+                                            label="Upload"
+                                            max={1}
+                                            fieldProps={{
+                                                name: 'file',
+                                            }}
+                                            action="/upload.do"
+                                            extra="longgggggggggggggggggggggggggggggggggg"
+                                        />
+                                    );
                                 },
                             },
                         },

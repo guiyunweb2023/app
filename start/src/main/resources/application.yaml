@@ -38,3 +38,7 @@ auth:
   ignored:
     urls:
       - /auth/login
+      - /upload
+
+file:
+  upload-dir: ${UPLOAD_DIR:/Users/guiyun/upload}
