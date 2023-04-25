@@ -43,7 +43,7 @@ public class CommonController {
                 dir.mkdirs();
             }
             // 生成新的文件名，使用时间戳和原始文件名
-            String newFileName = System.currentTimeMillis() + "_" + originalFilename;
+            String newFileName = String.valueOf(System.currentTimeMillis());
             // 构建上传文件的保存路径，包括上传文件的新文件名和文件夹路径
             String filePath = dirPath + newFileName;
             // 保存上传文件
