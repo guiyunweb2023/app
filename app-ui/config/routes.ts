@@ -24,18 +24,12 @@ export default [
             {
                 name: '首页',
                 path: '/home',
-                component: './Home',
+                component: './home',
             },
             {
-                name: '权限演示',
-                path: '/access',
-                access: 'root',
-                component: './Access',
-            },
-            {
-                name: ' CRUD 示例',
-                path: '/table',
-                component: './Table',
+                name: '测试页面',
+                path: '/test',
+                component: './test',
             },
         ]
     },
